@@ -3,13 +3,21 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "echo \"Testing start\""
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@mikro-orm/core": "^6.3.4",
+    "@mikro-orm/postgresql": "^6.3.4",
     "ioredis": "^5.4.1",
     "selenium-webdriver": "^4.23.0"
+  },
+  "devDependencies": {
+    "@mikro-orm/cli": "^6.3.4",
+    "@mikro-orm/entity-generator": "^6.3.4",
+    "typescript": "^5.5.4"
   }
 }

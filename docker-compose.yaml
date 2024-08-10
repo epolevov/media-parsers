@@ -40,3 +40,19 @@ services:
     restart: unless-stopped
     logging:
       driver: none
+
+  application:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    command: npm run start
+    volumes:
+      - .:/usr/app/
+      - /usr/app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - parser-net
+    environment:
+      DATABASE_URL: postgres://user:password@postgres/parser
