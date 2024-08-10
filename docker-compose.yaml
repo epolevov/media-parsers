@@ -1,10 +1,14 @@
-version: "3.9"
 volumes:
   parser_pgadmin: {}
+networks:
+  parser-net:
+    driver: bridge
 services:
   redis:
     container_name: parser-redis
     image: "redis:alpine"
+    networks:
+      - parser-net
     logging:
       driver: none
 
@@ -14,21 +18,25 @@ services:
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
-      - POSTGRES_MULTIPLE_DATABASES="parser-redis"
+      - POSTGRES_MULTIPLE_DATABASES="parser-postgres"
+    networks:
+      - parser-net
     logging:
       driver: none
 
   pgadmin:
-    container_name: emd-pgadmin
+    container_name: parser-pgadmin
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@mymap.online}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     volumes:
-      - pgadmin_common:/var/lib/pgadmin
+      - parser_pgadmin:/var/lib/pgadmin
     ports:
       - '${PGADMIN_PORT:-5051}:80'
+    networks:
+      - parser-net
     restart: unless-stopped
     logging:
       driver: none
