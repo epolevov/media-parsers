@@ -1,5 +1,5 @@
-import Worker from './worker/Worker';
+import Application from './application/Application';
 
-const worker = new Worker();
+const application = new Application();
 
-worker.start();
+application.start();

@@ -9,6 +9,8 @@ services:
     image: "redis:alpine"
     networks:
       - parser-net
+    ports:
+      - '6379:6379'
     logging:
       driver: none
 
@@ -18,9 +20,11 @@ services:
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
-      - POSTGRES_MULTIPLE_DATABASES="parser-postgres"
+      - POSTGRES_MULTIPLE_DATABASES="parser"
     networks:
       - parser-net
+    ports:
+      - '5432:5432'
     logging:
       driver: none
 
@@ -28,31 +32,30 @@ services:
     container_name: parser-pgadmin
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@mymap.online}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@localhost}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     volumes:
       - parser_pgadmin:/var/lib/pgadmin
     ports:
-      - '${PGADMIN_PORT:-5051}:80'
+      - '${PGADMIN_PORT:-5052}:80'
     networks:
       - parser-net
     restart: unless-stopped
     logging:
       driver: none
 
-  application:
-    build:
-      context: ./src
-      dockerfile: Dockerfile
-    command: npm run start
-    volumes:
-      - .:/usr/app/
-      - /usr/app/node_modules
-    depends_on:
-      - postgres
-      - redis
-    networks:
-      - parser-net
-    environment:
-      DATABASE_URL: postgres://user:password@postgres/parser
+  # application:
+  #   build:
+  #     context: ./src
+  #     dockerfile: Dockerfile
+  #   command: npm run start
+  #   depends_on:
+  #     - postgres
+  #     - redis
+  #   networks:
+  #     - parser-net
+  #   environment:
+  #     DB_NAME: parser
+  #     DB_CLIENT_URL: postgresql://user:password@postgresql:5432/parser
+  #     REDIS_HOST: redis
