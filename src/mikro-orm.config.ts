@@ -5,6 +5,8 @@ import { Migrator, TSMigrationGenerator } from '@mikro-orm/migrations';
 import { Journal } from './schema/entities/Journal.entity';
 import { QueueMediaFiles } from './schema/entities/QueueMediaFiles.entity';
 
+require('dotenv').config();
+
 const config: Options = {
   driver: PostgreSqlDriver,
   entities: [Journal, QueueMediaFiles],

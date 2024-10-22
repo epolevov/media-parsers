@@ -99,11 +99,15 @@ class WaitJournalWorker extends BaseWorker {
       }
 
       await em.commit();
-    } catch {
+    } catch (e) {
       await em.rollback();
 
       await this.application.schema.upsertJournal({
-        payload: { _id: journal._id, status: StatusJournal.Failed },
+        payload: {
+          _id: journal._id,
+          status: StatusJournal.Failed,
+          errorMessage: e.message,
+        },
       });
     }
   }

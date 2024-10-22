@@ -5,9 +5,11 @@ import {
   IntegerType,
   Property,
   StringType,
+  // StringType,
   Unique,
 } from '@mikro-orm/core';
 import { BaseEntity } from './BaseEntity';
+import { FullTextType } from '@mikro-orm/postgresql';
 
 export enum StatusJournal {
   WaitList = 'wait-list',
@@ -29,6 +31,9 @@ export class Journal extends BaseEntity {
     default: StatusJournal.WaitList,
   })
   status?: StatusJournal = StatusJournal.WaitList;
+
+  @Property({ type: StringType, length: 1000, nullable: true })
+  errorMessage?: string;
 
   @Property({ type: IntegerType })
   totalCount?: number = 0;

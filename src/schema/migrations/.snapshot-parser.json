@@ -63,6 +63,16 @@
           ],
           "mappedType": "enum"
         },
+        "error_message": {
+          "name": "error_message",
+          "type": "varchar(1000)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 1000,
+          "mappedType": "string"
+        },
         "total_count": {
           "name": "total_count",
           "type": "int",

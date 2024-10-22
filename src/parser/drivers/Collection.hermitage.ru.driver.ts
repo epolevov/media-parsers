@@ -15,6 +15,16 @@ class CollectionHermitageRuDriver implements DriverInteface {
 
       let index = 0;
 
+      let totalCount = await driver
+        .findElement(
+          By.xpath(
+            '/html/body/app-root/div/iss-entity-page/div/div[2]/div[2]/div/span[2]'
+          )
+        )
+        .getAttribute('innerText');
+
+      totalCount = Number(totalCount);
+
       while (true) {
         // Get src
         let src;
@@ -22,7 +32,7 @@ class CollectionHermitageRuDriver implements DriverInteface {
         src = await driver
           .findElement(
             By.xpath(
-              '/html/body/app-root/div/iss-entity-page/div/div[4]/iss-entity-gallery/div[1]/div/div/iss-image/img'
+              '/html/body/app-root/div/iss-entity-page/div/div[4]/iss-media-gallery/div[1]/div/div/iss-image/img'
             )
           )
           .getAttribute('src');
@@ -44,27 +54,28 @@ class CollectionHermitageRuDriver implements DriverInteface {
           await driver
             .findElement(
               By.xpath(
-                ' /html/body/app-root/div/iss-entity-page/div/a[2]/div[1]'
+                '/html/body/app-root/div/iss-entity-page/div/a[2]/div[1]'
               )
             )
             .click();
         } else {
           await driver
             .findElement(
-              By.xpath(
-                '/html/body/app-root/div/iss-entity-page/div/a[3]/div[1]'
-              )
+              By.xpath('/html/body/app-root/div/iss-entity-page/div/a[3]')
             )
             .click();
         }
 
-        // If no src, then exit
-        // if (!src) break;
-
         result.push(src);
+
+        console.log(index, src);
+
+        index++;
 
         // Timeout
         await driver.wait(new Promise((res) => setTimeout(res, 200)), 200);
+
+        if (index >= totalCount) break;
       }
     } catch {
       throw Error('Failed get media files');
