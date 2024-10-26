@@ -3,6 +3,7 @@ import Application from '../application/Application';
 import { Journal, StatusJournal } from '../schema/entities/Journal.entity';
 import BaseWorker from './Base.worker';
 import path from 'path';
+import { StatusQueueMediaFile } from '../schema/entities/QueueMediaFiles.entity';
 
 class WaitJournalWorker extends BaseWorker {
   constructor(protected readonly application: Application) {
@@ -12,15 +13,22 @@ class WaitJournalWorker extends BaseWorker {
   start() {
     console.log('Worker wait journal is started!');
 
+    this.startJournal(StatusJournal.Preparation);
+
     setInterval(() => {
-      this.startWaitJournal();
+      this.startJournal(StatusJournal.WaitList);
+      this.syncDownloadedQueueMediaFiles();
     }, 10_000);
+
+    setInterval(() => {
+      this.application.schema.updateJournalStatusFailedToWaitList();
+    }, 60_000);
   }
 
-  private async startWaitJournal() {
+  private async startJournal(status: StatusJournal) {
     const list = await this.application.schema.getJournals({
       where: {
-        status: StatusJournal.WaitList,
+        status,
       },
       options: {},
     });
@@ -30,9 +38,40 @@ class WaitJournalWorker extends BaseWorker {
     }
   }
 
+  private async syncDownloadedQueueMediaFiles() {
+    const list = await this.application.schema.getJournals({
+      where: {
+        status: { $ne: StatusJournal.WaitList },
+      },
+      options: {},
+    });
+
+    for (const journal of list) {
+      const progressCount = await this.getCountQueueMediaFiles(journal);
+
+      await this.application.schema.upsertJournal({
+        payload: {
+          _id: journal._id,
+          progressCount: progressCount,
+        },
+      });
+    }
+  }
+
+  private async getCountQueueMediaFiles(journal: Journal) {
+    const count = await this.application.schema.getCountQueueMediaFiles({
+      where: {
+        journal: journal._id,
+        status: StatusQueueMediaFile.Downloaded,
+      },
+    });
+
+    return count;
+  }
+
   private getPathContent(i: number, url: string) {
     const safeTitle = this.reformatTitle(url);
-    const dir = path.resolve(`../content/${i}_${safeTitle}`);
+    const dir = path.resolve(`../../content/${i}_${safeTitle}`);
 
     return dir;
   }

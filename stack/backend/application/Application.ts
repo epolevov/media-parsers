@@ -2,6 +2,7 @@ import Redis from 'ioredis';
 import Schema from '../schema/Schema';
 import WaitJournalWorker from '../worker/WaitJournal.worker';
 import QueueMediaFilesWorker from '../worker/QueueMediaFiles.worker';
+import EmdSyncWorker from '../worker/EmdSync.worker';
 
 import Parser from '../parser/Parser';
 
@@ -11,6 +12,7 @@ class Application {
   public parser: Parser;
   public waitJournalWorker: WaitJournalWorker;
   public queueMediaFilesWorker: QueueMediaFilesWorker;
+  public emdSyncWorker: EmdSyncWorker;
   public config = {
     redis: {
       host: process.env.REDIS_HOST,
@@ -23,6 +25,7 @@ class Application {
     this.parser = new Parser(this);
     this.waitJournalWorker = new WaitJournalWorker(this);
     this.queueMediaFilesWorker = new QueueMediaFilesWorker(this);
+    this.emdSyncWorker = new EmdSyncWorker(this);
   }
 
   async start() {
@@ -32,6 +35,7 @@ class Application {
 
     this.waitJournalWorker.start();
     this.queueMediaFilesWorker.start();
+    this.emdSyncWorker.start();
   }
 }
 

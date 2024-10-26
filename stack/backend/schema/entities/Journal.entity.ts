@@ -24,6 +24,9 @@ export class Journal extends BaseEntity {
   @Property({ columnType: 'text' })
   url!: string;
 
+  @Property({ type: StringType })
+  emdRowId!: string;
+
   @Enum({
     type: EnumType,
     items: () => StatusJournal,

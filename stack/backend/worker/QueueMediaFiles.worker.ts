@@ -19,6 +19,10 @@ class QueueMediaFilesWorker extends BaseWorker {
     setInterval(() => {
       this.startDownload();
     }, 1_000);
+
+    setInterval(() => {
+      this.application.schema.updateQueueMediaFilesStatusFailedToWaitList();
+    }, 60_000);
   }
 
   private async startDownload() {
@@ -48,13 +52,12 @@ class QueueMediaFilesWorker extends BaseWorker {
           `🚫 An error occurred: the server returned a status ${response.statusCode}.`
         );
 
-        /**
         this.application.schema.upsertQueueMediaFile({
           payload: {
             _id: queueMediaFile._id,
             status: StatusQueueMediaFile.Failed,
           },
-        }); */
+        });
 
         return;
       }

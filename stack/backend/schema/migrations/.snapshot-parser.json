@@ -46,6 +46,16 @@
           "nullable": false,
           "mappedType": "text"
         },
+        "emd_row_id": {
+          "name": "emd_row_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
         "status": {
           "name": "status",
           "type": "text",

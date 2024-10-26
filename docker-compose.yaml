@@ -47,7 +47,7 @@ services:
 
   # application:
   #   build:
-  #     context: ./src
+  #     context: ./stack/backend
   #     dockerfile: Dockerfile
   #   command: npm run start
   #   depends_on:

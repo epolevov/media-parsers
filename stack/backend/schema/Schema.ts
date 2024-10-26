@@ -8,8 +8,11 @@ import {
 import Application from 'application/Application';
 
 import config from '../mikro-orm.config';
-import { Journal } from './entities/Journal.entity';
-import { QueueMediaFiles } from './entities/QueueMediaFiles.entity';
+import { Journal, StatusJournal } from './entities/Journal.entity';
+import {
+  QueueMediaFiles,
+  StatusQueueMediaFile,
+} from './entities/QueueMediaFiles.entity';
 
 class Schema {
   public orm: MikroORM;
@@ -44,12 +47,39 @@ class Schema {
     where: FilterQuery<any>;
     options: FindOptions<any>;
     parentEm?: EntityManager;
-  }) {
+  }): Promise<Journal[]> {
     const em = parentEm || this.orm.em.fork();
 
     const data = await em.find(Journal, where, options);
 
     return data;
+  }
+
+  async updateJournalStatusFailedToWaitList() {
+    const em = this.orm.em.fork();
+
+    // @ts-ignore
+    const qb = em.createQueryBuilder(Journal);
+    await qb
+      .update({ status: StatusJournal.Failed })
+      .where({
+        status: StatusJournal.WaitList,
+        errorMessage: '',
+      })
+      .execute();
+  }
+
+  async updateQueueMediaFilesStatusFailedToWaitList() {
+    const em = this.orm.em.fork();
+
+    // @ts-ignore
+    const qb = em.createQueryBuilder(QueueMediaFiles);
+    await qb
+      .update({ status: StatusQueueMediaFile.Failed })
+      .where({
+        status: StatusQueueMediaFile.WaitList,
+      })
+      .execute();
   }
 
   async getJournal({ where = {}, requiredFail = true, parentEm = null }) {
@@ -122,6 +152,18 @@ class Schema {
 
       return result;
     }
+  }
+
+  async getCountQueueMediaFiles({
+    where = {},
+
+    parentEm = null,
+  }) {
+    const em: EntityManager = parentEm || this.orm.em.fork();
+
+    const count = await em.count(QueueMediaFiles, where);
+
+    return count;
   }
 }
 
