@@ -58,14 +58,6 @@ class EmdSyncWorker extends BaseWorker {
           });
 
           console.log(`New request "${row.data.url}" is saved!`);
-        } else {
-          await this.application.schema.upsertJournal({
-            payload: {
-              _id: item._id,
-              status: StatusJournal.WaitList,
-              emdRowId: row._id,
-            },
-          });
         }
       }
     } catch (err) {
