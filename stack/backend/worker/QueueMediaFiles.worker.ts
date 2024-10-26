@@ -22,7 +22,7 @@ class QueueMediaFilesWorker extends BaseWorker {
 
     setInterval(() => {
       this.application.schema.updateQueueMediaFilesStatusFailedToWaitList();
-    }, 60_000);
+    }, 10_000);
   }
 
   private async startDownload() {

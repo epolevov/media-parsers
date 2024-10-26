@@ -75,23 +75,25 @@ class EmdSyncWorker extends BaseWorker {
       });
 
       for (const journal of journals) {
-        await axios.put(
-          this.endpoint + '/database/journal/row',
-          {
-            _id: journal.emdRowId,
-            data: {
-              status: journal.status,
-              total_count: journal.totalCount,
-              progress_count: journal.progressCount,
-              raw: journal,
+        try {
+          await axios.put(
+            this.endpoint + '/database/journal/row',
+            {
+              _id: journal.emdRowId,
+              data: {
+                status: journal.status,
+                total_count: journal.totalCount,
+                progress_count: journal.progressCount,
+                raw: journal,
+              },
             },
-          },
-          {
-            headers: {
-              apitoken: this.apitoken,
-            },
-          }
-        );
+            {
+              headers: {
+                apitoken: this.apitoken,
+              },
+            }
+          );
+        } catch {}
       }
     } catch (err) {
       console.log('Failed sync to cloud', err);

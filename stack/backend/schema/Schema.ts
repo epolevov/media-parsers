@@ -61,9 +61,9 @@ class Schema {
     // @ts-ignore
     const qb = em.createQueryBuilder(Journal);
     await qb
-      .update({ status: StatusJournal.Failed })
+      .update({ status: StatusJournal.WaitList })
       .where({
-        status: StatusJournal.WaitList,
+        status: StatusJournal.Failed,
         errorMessage: '',
       })
       .execute();
@@ -75,9 +75,9 @@ class Schema {
     // @ts-ignore
     const qb = em.createQueryBuilder(QueueMediaFiles);
     await qb
-      .update({ status: StatusQueueMediaFile.Failed })
+      .update({ status: StatusQueueMediaFile.WaitList })
       .where({
-        status: StatusQueueMediaFile.WaitList,
+        status: StatusQueueMediaFile.Failed,
       })
       .execute();
   }

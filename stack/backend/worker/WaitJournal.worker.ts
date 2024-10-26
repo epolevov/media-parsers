@@ -22,7 +22,7 @@ class WaitJournalWorker extends BaseWorker {
 
     setInterval(() => {
       this.application.schema.updateJournalStatusFailedToWaitList();
-    }, 60_000);
+    }, 10_000);
   }
 
   private async startJournal(status: StatusJournal) {
