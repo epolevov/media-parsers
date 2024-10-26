@@ -2,20 +2,16 @@ import { Builder, By } from 'selenium-webdriver';
 import { DriverInteface } from './Driver.interface';
 
 class CollectionHermitageRuDriver implements DriverInteface {
-  async getMediaFiles(url: string) {
+  async getMediaFiles(url: string, result = [], totalCount = 0, index = 0) {
     const driver = await new Builder()
       .forBrowser('chrome')
       .setChromeOptions(/* ... */)
       .build();
 
-    const result = [];
-
     try {
-      await driver.get(url);
+      await driver.get(this.reformatUrl(url, index));
 
-      let index = 0;
-
-      let totalCount = await driver
+      let elTotalCount = await driver
         .findElement(
           By.xpath(
             '/html/body/app-root/div/iss-entity-page/div/div[2]/div[2]/div/span[2]'
@@ -23,7 +19,7 @@ class CollectionHermitageRuDriver implements DriverInteface {
         )
         .getAttribute('innerText');
 
-      totalCount = Number(totalCount);
+      totalCount = Number(elTotalCount);
 
       while (true) {
         // Get src
@@ -66,22 +62,38 @@ class CollectionHermitageRuDriver implements DriverInteface {
             .click();
         }
 
-        result.push(src);
+        if (result.includes(src)) {
+          console.warn(`File URL is already list (${src})`);
+        } else {
+          result.push(src);
+        }
 
         console.log(index, src);
 
         index++;
 
         // Timeout
-        await driver.wait(new Promise((res) => setTimeout(res, 200)), 200);
+        await driver.wait(new Promise((res) => setTimeout(res, 1000)), 1000);
 
-        if (index >= totalCount) break;
+        if (index >= totalCount) {
+          console.log('Breaked parse');
+          break;
+        }
       }
     } catch {
       throw Error('Failed get media files');
     } finally {
       await driver.quit();
-      return result;
+
+      if (index >= totalCount) {
+        console.log(`Finished parse ${index} of ${totalCount} items elements!`);
+
+        return result;
+      } else {
+        console.log('Aborted! Continue parse...');
+
+        return await this.getMediaFiles(url, result, totalCount, index);
+      }
     }
   }
 
@@ -101,6 +113,12 @@ class CollectionHermitageRuDriver implements DriverInteface {
       .replace(/__/gi, '_')
       .toLowerCase()
       .substring(0, 50);
+  }
+
+  private reformatUrl(url: string, index: number) {
+    url = url.replace('&index=0', '');
+
+    return url + '&index=' + index;
   }
 }
 

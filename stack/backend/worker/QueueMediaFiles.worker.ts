@@ -33,7 +33,7 @@ class QueueMediaFilesWorker extends BaseWorker {
     });
 
     for (const queueMediaFile of list) {
-      this.download(queueMediaFile);
+      await this.download(queueMediaFile);
     }
   }
 
@@ -48,12 +48,13 @@ class QueueMediaFilesWorker extends BaseWorker {
           `🚫 An error occurred: the server returned a status ${response.statusCode}.`
         );
 
+        /**
         this.application.schema.upsertQueueMediaFile({
           payload: {
             _id: queueMediaFile._id,
             status: StatusQueueMediaFile.Failed,
           },
-        });
+        }); */
 
         return;
       }
@@ -74,14 +75,15 @@ class QueueMediaFilesWorker extends BaseWorker {
       });
 
       file.on('error', (err) => {
-        console.error(`🚫 Произошла ошибка сохранения файла.`, err);
+        console.error(`🚫 An error occurred while saving the file:`, err);
 
+        /** 
         this.application.schema.upsertQueueMediaFile({
           payload: {
             _id: queueMediaFile._id,
             status: StatusQueueMediaFile.Failed,
           },
-        });
+        }); */
       });
     });
   }

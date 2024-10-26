@@ -9,7 +9,6 @@ import {
   Unique,
 } from '@mikro-orm/core';
 import { BaseEntity } from './BaseEntity';
-import { FullTextType } from '@mikro-orm/postgresql';
 
 export enum StatusJournal {
   WaitList = 'wait-list',
