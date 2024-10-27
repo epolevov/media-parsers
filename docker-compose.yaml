@@ -13,6 +13,7 @@ services:
       - '6379:6379'
     logging:
       driver: none
+    restart: always
 
   postgres:
     container_name: parser-postgres
@@ -27,13 +28,14 @@ services:
       - '5432:5432'
     logging:
       driver: none
+    restart: always
 
   pgadmin:
     container_name: parser-pgadmin
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@localhost}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_DEFAULT_EMAIL: cubooks@yandex.ru
+      PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     volumes:
       - parser_pgadmin:/var/lib/pgadmin
@@ -41,7 +43,7 @@ services:
       - '${PGADMIN_PORT:-5052}:80'
     networks:
       - parser-net
-    restart: unless-stopped
+    restart: always
     logging:
       driver: none
 
@@ -57,5 +59,7 @@ services:
   #     - parser-net
   #   environment:
   #     DB_NAME: parser
-  #     DB_CLIENT_URL: postgresql://user:password@postgresql:5432/parser
+  #     DB_CLIENT_URL: postgresql://user:password@postgres:5432/parser
   #     REDIS_HOST: redis
+  #   volumes:
+  #     - ./content:/usr/app/content

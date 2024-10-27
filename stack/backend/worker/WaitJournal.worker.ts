@@ -71,7 +71,7 @@ class WaitJournalWorker extends BaseWorker {
 
   private getPathContent(i: number, url: string) {
     const safeTitle = this.reformatTitle(url);
-    const dir = path.resolve(`../../content/${i}_${safeTitle}`);
+    const dir = path.resolve(__dirname, `../../../content/${i}_${safeTitle}`);
 
     return dir;
   }
@@ -104,6 +104,7 @@ class WaitJournalWorker extends BaseWorker {
 
     try {
       const pathDir = this.getPathContent(journal._id, journal.url);
+
       if (!fs.existsSync(pathDir)) fs.mkdirSync(pathDir);
 
       const mediaFiles = await this.application.parser.getMediaFiles(

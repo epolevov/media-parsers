@@ -64,7 +64,6 @@ class Schema {
       .update({ status: StatusJournal.WaitList })
       .where({
         status: StatusJournal.Failed,
-        errorMessage: '',
       })
       .execute();
   }
