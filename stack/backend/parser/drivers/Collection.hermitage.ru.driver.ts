@@ -63,12 +63,12 @@ class CollectionHermitageRuDriver implements DriverInteface {
         }
 
         if (result.includes(src)) {
-          console.warn(`File URL is already list (${src})`);
+          // console.warn(`File URL is already list (${src})`);
         } else {
           result.push(src);
         }
 
-        console.log(index, src);
+        // console.log(index, src);
 
         index++;
 
@@ -90,7 +90,7 @@ class CollectionHermitageRuDriver implements DriverInteface {
 
         return result;
       } else {
-        console.log('Aborted! Continue parse...');
+        // console.log('Aborted! Continue parse...');
 
         return await this.getMediaFiles(url, result, totalCount, index);
       }

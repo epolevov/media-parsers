@@ -48,9 +48,9 @@ class QueueMediaFilesWorker extends BaseWorker {
 
     plugin.get(queueMediaFile.url, (response) => {
       if (response.statusCode !== 200) {
-        console.error(
-          `🚫 An error occurred: the server returned a status ${response.statusCode}.`
-        );
+        // console.error(
+        //   `🚫 An error occurred: the server returned a status ${response.statusCode}.`
+        // );
 
         this.application.schema.upsertQueueMediaFile({
           payload: {
@@ -78,8 +78,7 @@ class QueueMediaFilesWorker extends BaseWorker {
       });
 
       file.on('error', (err) => {
-        console.error(`🚫 An error occurred while saving the file:`, err);
-
+        // console.error(`🚫 An error occurred while saving the file:`, err);
         /** 
         this.application.schema.upsertQueueMediaFile({
           payload: {

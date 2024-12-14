@@ -57,11 +57,11 @@ class EmdSyncWorker extends BaseWorker {
             },
           });
 
-          console.log(`New request "${row.data.url}" is saved!`);
+          // console.log(`New request "${row.data.url}" is saved!`);
         }
       }
     } catch (err) {
-      console.log('Failed sync to local', err);
+      // console.log('Failed sync to local', err);
     }
   }
 
@@ -96,7 +96,7 @@ class EmdSyncWorker extends BaseWorker {
         } catch {}
       }
     } catch (err) {
-      console.log('Failed sync to cloud', err);
+      // console.log('Failed sync to cloud', err);
     }
   }
 }
