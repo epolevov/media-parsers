@@ -17,6 +17,7 @@ class WaitJournalWorker extends BaseWorker {
 
     setInterval(() => {
       this.startJournal(StatusJournal.WaitList);
+      this.finishJournal();
       this.syncDownloadedQueueMediaFiles();
     }, 10_000);
 
@@ -30,13 +31,37 @@ class WaitJournalWorker extends BaseWorker {
       where: {
         status,
       },
-      options: {},
+      options: {
+        limit: 1
+      },
     });
 
     for (const journal of list) {
       this.prepareWaitJournal(journal);
     }
   }
+
+  private async finishJournal() {
+    const list = await this.application.schema.getJournals({
+      where: {
+        status: { $ne: StatusJournal.Finished },
+      },
+      options: {},
+    });
+
+    for (const journal of list) {
+      if (journal.totalCount > 0 &&  journal.progressCount > 0 && journal.totalCount === journal.progressCount) {
+        await this.application.schema.upsertJournal({
+          payload: {
+            _id: journal._id,
+          status: StatusJournal.Finished
+          }
+        });
+      }
+      
+    }
+  }
+
 
   private async syncDownloadedQueueMediaFiles() {
     const list = await this.application.schema.getJournals({
@@ -119,6 +144,7 @@ class WaitJournalWorker extends BaseWorker {
             journal: journal._id,
             url: mediaFile,
             index: this.paddingNumber(ii, 4),
+            status: StatusQueueMediaFile.WaitList,
             path: pathDir,
           },
           parentEm: em,

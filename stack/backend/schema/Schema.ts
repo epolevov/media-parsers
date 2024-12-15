@@ -132,6 +132,24 @@ class Schema {
   async upsertQueueMediaFile({ parentEm = null, payload }) {
     const em = parentEm || this.orm.em.fork();
 
+    if (payload.url) {
+      const existing = await this.getQueueMediaFile({
+        where: { url: payload.url },
+        requiredFail: false,
+      });
+
+      if (existing) {
+        const result = wrap(existing).assign(payload, {
+          em,
+          updateNestedEntities: true,
+        });
+  
+        await em.persistAndFlush(result);
+  
+        return result;
+      }
+    } 
+    
     if (payload._id) {
       const existing = await this.getQueueMediaFile({
         where: { _id: payload._id },

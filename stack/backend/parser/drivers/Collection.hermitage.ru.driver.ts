@@ -11,6 +11,10 @@ class CollectionHermitageRuDriver implements DriverInteface {
     try {
       await driver.get(this.reformatUrl(url, index));
 
+      // Timeout
+      await driver.wait(new Promise((res) => setTimeout(res, 5000)), 5000);
+
+
       let elTotalCount = await driver
         .findElement(
           By.xpath(
@@ -36,37 +40,46 @@ class CollectionHermitageRuDriver implements DriverInteface {
         src = this.reformatSrc(src);
 
         // Get title
-        let title = await driver
-          .findElement(
-            By.xpath(
-              '/html/body/app-root/div/iss-entity-page/div/div[4]/iss-entity-detailed-info/div[1]/span'
-            )
-          )
-          .getText();
-        title = this.reformatTitle(title);
+        let title = '';
 
-        // Behavior navigate
-        if (index === 0) {
-          await driver
+        try {
+          let title = await driver
             .findElement(
               By.xpath(
-                '/html/body/app-root/div/iss-entity-page/div/a[2]/div[1]'
+                '/html/body/app-root/div/iss-entity-page/div/div[4]/iss-entity-detailed-info/div[1]/span'
               )
             )
-            .click();
-        } else {
-          await driver
-            .findElement(
-              By.xpath('/html/body/app-root/div/iss-entity-page/div/a[3]')
-            )
-            .click();
-        }
+            .getText();
+          title = this.reformatTitle(title);
+        } catch {}
 
-        if (result.includes(src)) {
-          // console.warn(`File URL is already list (${src})`);
-        } else {
-          result.push(src);
-        }
+
+        try {
+          // Behavior navigate
+          if (index === 0) {
+            // /html/body/app-root/div/iss-entity-page/div/a[2]
+            await driver
+              .findElement(
+                By.xpath(
+                  '/html/body/app-root/div/iss-entity-page/div/a[2]/div[1]'
+                )
+              )
+              .click();
+          } else {
+            // /html/body/app-root/div/iss-entity-page/div/a[3]/div[1]
+            await driver
+              .findElement(
+                By.xpath('/html/body/app-root/div/iss-entity-page/div/a[3]/div[1]')
+              )
+              .click();
+          }
+
+          if (result.includes(src)) {
+            // console.warn(`File URL is already list (${src})`);
+          } else {
+            result.push(src);
+          }
+        } catch {}
 
         // console.log(index, src);
 
@@ -80,7 +93,9 @@ class CollectionHermitageRuDriver implements DriverInteface {
           break;
         }
       }
-    } catch {
+    } catch (err) {
+      console.log('Failed parse page', index, err);
+
       throw Error('Failed get media files');
     } finally {
       await driver.quit();
