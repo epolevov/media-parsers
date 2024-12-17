@@ -210,12 +210,12 @@
         },
         "index": {
           "name": "index",
-          "type": "varchar(255)",
+          "type": "varchar(260)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
+          "length": 260,
           "default": "'0'",
           "mappedType": "string"
         },
