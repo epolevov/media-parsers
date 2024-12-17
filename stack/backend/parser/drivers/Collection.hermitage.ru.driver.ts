@@ -42,44 +42,47 @@ class CollectionHermitageRuDriver implements DriverInteface {
         let title = '';
 
         try {
-          let title = await driver
+          title = await driver
             .findElement(
               By.xpath(
-                '/html/body/app-root/div/iss-entity-page/div/div[4]/iss-entity-detailed-info/div[1]/span'
+                '/html/body/app-root/div/iss-entity-page/div/div[3]/span'
               )
             )
             .getText();
+
           title = this.reformatTitle(title);
-        } catch {}
+        } catch (err) {
+          console.log('Failed get title:', err)
+        }
 
         try {
           // Behavior navigate
           if (index === 0) {
-            // /html/body/app-root/div/iss-entity-page/div/a[2]
-            await driver
-              .findElement(
-                By.xpath(
-                  '/html/body/app-root/div/iss-entity-page/div/a[2]/div[1]'
+            try {
+              await driver
+                .findElement(
+                  By.xpath(
+                    '/html/body/app-root/div/iss-entity-page/div/a[2]/div[1]'
+                  )
                 )
-              )
-              .click();
+                .click();
+            } catch {}
           } else {
-            // /html/body/app-root/div/iss-entity-page/div/a[3]/div[1]
-            await driver
-              .findElement(
-                By.xpath(
-                  '/html/body/app-root/div/iss-entity-page/div/a[3]/div[1]'
+            try {
+              await driver
+                .findElement(
+                  By.xpath(
+                    '/html/body/app-root/div/iss-entity-page/div/a[3]/div[1]'
+                  )
                 )
-              )
-              .click();
+                .click();
+              } catch {}
           }
 
-          if (result.includes(src)) {
-            // console.warn(`File URL is already list (${src})`);
-          } else {
-            result.push({ title, src });
-          }
-        } catch {}
+          result.push({ title, src });   
+        } catch (err) {
+          console.log('Debug Error:', err)
+        }
 
         // console.log(index, src);
 
@@ -127,7 +130,7 @@ class CollectionHermitageRuDriver implements DriverInteface {
       .replace(/[^а-яА-яA-Za-z0-9]/gi, '_')
       .replace(/__/gi, '_')
       .toLowerCase()
-      .substring(0, 50);
+      .substring(0, 150);
   }
 
   private reformatUrl(url: string, index: number) {
