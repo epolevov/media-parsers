@@ -32,7 +32,7 @@ class WaitJournalWorker extends BaseWorker {
         status,
       },
       options: {
-        limit: 1
+        limit: 1,
       },
     });
 
@@ -50,18 +50,20 @@ class WaitJournalWorker extends BaseWorker {
     });
 
     for (const journal of list) {
-      if (journal.totalCount > 0 &&  journal.progressCount > 0 && journal.totalCount === journal.progressCount) {
+      if (
+        journal.totalCount > 0 &&
+        journal.progressCount > 0 &&
+        journal.totalCount === journal.progressCount
+      ) {
         await this.application.schema.upsertJournal({
           payload: {
             _id: journal._id,
-          status: StatusJournal.Finished
-          }
+            status: StatusJournal.Finished,
+          },
         });
       }
-      
     }
   }
-
 
   private async syncDownloadedQueueMediaFiles() {
     const list = await this.application.schema.getJournals({
@@ -138,12 +140,16 @@ class WaitJournalWorker extends BaseWorker {
 
       let ii = 1;
 
-      for (const mediaFile of mediaFiles) {
+      for (const { src, title } of mediaFiles) {
+        const index = String(
+          this.paddingNumber(ii, 4) + (title ? '_' : '') + title
+        ).substring(0, 260);
+
         await this.application.schema.upsertQueueMediaFile({
           payload: {
             journal: journal._id,
-            url: mediaFile,
-            index: this.paddingNumber(ii, 4),
+            url: src,
+            index,
             status: StatusQueueMediaFile.WaitList,
             path: pathDir,
           },

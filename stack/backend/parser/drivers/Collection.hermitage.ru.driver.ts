@@ -14,7 +14,6 @@ class CollectionHermitageRuDriver implements DriverInteface {
       // Timeout
       await driver.wait(new Promise((res) => setTimeout(res, 5000)), 5000);
 
-
       let elTotalCount = await driver
         .findElement(
           By.xpath(
@@ -53,7 +52,6 @@ class CollectionHermitageRuDriver implements DriverInteface {
           title = this.reformatTitle(title);
         } catch {}
 
-
         try {
           // Behavior navigate
           if (index === 0) {
@@ -69,7 +67,9 @@ class CollectionHermitageRuDriver implements DriverInteface {
             // /html/body/app-root/div/iss-entity-page/div/a[3]/div[1]
             await driver
               .findElement(
-                By.xpath('/html/body/app-root/div/iss-entity-page/div/a[3]/div[1]')
+                By.xpath(
+                  '/html/body/app-root/div/iss-entity-page/div/a[3]/div[1]'
+                )
               )
               .click();
           }
@@ -77,7 +77,7 @@ class CollectionHermitageRuDriver implements DriverInteface {
           if (result.includes(src)) {
             // console.warn(`File URL is already list (${src})`);
           } else {
-            result.push(src);
+            result.push({ title, src });
           }
         } catch {}
 

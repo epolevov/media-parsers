@@ -37,7 +37,7 @@ export class QueueMediaFiles extends BaseEntity {
   })
   status?: StatusQueueMediaFile = StatusQueueMediaFile.WaitList;
 
-  @Property({ type: StringType })
+  @Property({ type: StringType, length: 260 })
   index?: string = '0';
 
   @Property({ type: IntegerType })

@@ -40,7 +40,7 @@ class ElibShplRuDriver implements DriverInteface {
 
         const photoUrl = `http://elib.shpl.ru/pages/${photoId}/zooms/8`;
 
-        result.push(photoUrl);
+        result.push({ title: '', src: photoUrl });
 
         ii++;
       }
